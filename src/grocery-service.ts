@@ -11,15 +11,15 @@ export class DefaultGroceryService implements GroceryService {
         return this.groceryDao.getAll()
     }
     async getById (id: string):Promise<FoodItem> {
-        throw new Error('Not implemented')
+        return await this.groceryDao.getById(id)
     }
     async create (item: FoodItem):Promise<void> {
-        throw new Error('Not implemented')
+        await this.groceryDao.create(item)
     }
     async delete (id: string):Promise<void> {
-        throw new Error('Not implemented')
+        await this.groceryDao.delete(id)
     }
     async update (item: FoodItem):Promise<void> {
-        throw new Error('Not implemented')
+        await this.groceryDao.update(item)
     }
 }

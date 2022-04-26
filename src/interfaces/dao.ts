@@ -5,3 +5,7 @@ export interface Dao<T> {
     update: (item: T) => Promise<void>
     delete: (id: string) => Promise<void>
 }
+
+
+// MyFoodStore är av typen Store, och store är av typen FoodItem. 
+// Vi byter ut <T> till <FoodItem>

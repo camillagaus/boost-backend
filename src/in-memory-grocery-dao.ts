@@ -12,15 +12,16 @@ export class InMemoryGroceryDao implements Dao<FoodItem>{
         return this.items
     }
     async getById (id: string):Promise<FoodItem> {
-        throw new Error('Not implemented')
+        return this.items.find(x => x.id == id)
     }
     async create (item: FoodItem):Promise<void> {
-        throw new Error('Not implemented')
+        this.items.push(item)
     }
     async delete (id: string):Promise<void> {
-        throw new Error('Not implemented')
+        this.items  = this.items.filter(x => x.id != id)    
     }
     async update (item: FoodItem):Promise<void> {
-        throw new Error('Not implemented')
+        this.items = this.items.filter(x => x.id != item.id)
+        this.items.push(item)
     }
 }
