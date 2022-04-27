@@ -4,6 +4,9 @@ import { DefaultGroceryService } from './grocery-service'
 import { InMemoryGroceryDao } from './dao/in-memory-grocery-dao'
 import { connectToMongoDB } from './connections'
 import { MongoDbDao } from './dao'
+import { foodItemSchema } from './validation'
+import { FoodItem } from './models'
+import timeLogger from './middleware'
 
 const initServer = async () => {
 
@@ -12,8 +15,9 @@ const initServer = async () => {
 
   const app = express()
   app.use(express.json())
+  app.use(timeLogger)
   const PORT = 8080
-  await connectToMongoDB()
+  await connectToMongoDB() 
 
   // NEDANFÖR ÄR VÅRA CONTROLLERS. 
   app.get('/food-items', async(req, res) => {
@@ -28,10 +32,17 @@ const initServer = async () => {
   })
 
   app.post('/food-items', async(req: express.Request, res: express.Response) => {
-    const item = req.body
-    await service.create(item)
-    console.log('req body: ', req.body)
-    res.sendStatus(201)
+    try {
+
+      const item: FoodItem = await foodItemSchema.validateAsync(req.body)
+      await service.create(item)
+      console.log('req body: ', req.body) 
+      res.sendStatus(201)
+
+    } catch (error) {
+      res.status(422).send(error.message)
+    }
+   
   })
 
   app.delete('/food-items/:id', async(req, res) => {
@@ -42,9 +53,14 @@ const initServer = async () => {
   })
 
   app.put('/food-items/:id', async(req, res) => {
-    const item = req.body
-    await service.update(item)
-    res.sendStatus(204)
+    try {
+      const item: FoodItem = await foodItemSchema.validateAsync(req.body)
+      await service.update(item)
+      res.sendStatus(204)
+    } catch (error) {
+      res.status(422).send(error.message)
+    }
+    
   })
 
   const server = app.listen(PORT, () => {
