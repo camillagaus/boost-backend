@@ -1,48 +1,57 @@
 import express from 'express'
 import 'dotenv/config'
 import { DefaultGroceryService } from './grocery-service'
-import { InMemoryGroceryDao } from './in-memory-grocery-dao'
+import { InMemoryGroceryDao } from './dao/in-memory-grocery-dao'
+import { connectToMongoDB } from './connections'
+import { MongoDbDao } from './dao'
 
-const dao = new InMemoryGroceryDao()
-const service = new DefaultGroceryService(dao)
+const initServer = async () => {
 
-const app = express()
-app.use(express.json())
-const PORT = 8080
+  const dao = new MongoDbDao()
+  const service = new DefaultGroceryService(dao)
 
-app.get('/food-items', async(req, res) => {
-  const items = await service.getAll()
-  res.send(items)
-})
+  const app = express()
+  app.use(express.json())
+  const PORT = 8080
+  await connectToMongoDB()
 
-app.get('/food-items/:id', async(req, res) => {
-  const item = await service.getById(req.params.id)
-  console.log('item: ', item)
-  res.send(item)
-})
+  // NEDANFÖR ÄR VÅRA CONTROLLERS. 
+  app.get('/food-items', async(req, res) => {
+    const items = await service.getAll()
+    res.send(items)
+  })
 
-app.post('/food-items', async(req: express.Request, res: express.Response) => {
-  const item = req.body
-  await service.create(item)
-  console.log('req body: ', req.body)
-  res.sendStatus(201)
-})
+  app.get('/food-items/:id', async(req, res) => {
+    const item = await service.getById(req.params.id)
+    console.log('item: ', item)
+    res.send(item)
+  })
 
-app.delete('/food-items/:id', async(req, res) => {
-  const id = req.params.id
-  await service.delete(id)
-  res.sendStatus(204)
-  
-})
+  app.post('/food-items', async(req: express.Request, res: express.Response) => {
+    const item = req.body
+    await service.create(item)
+    console.log('req body: ', req.body)
+    res.sendStatus(201)
+  })
 
-app.put('/food-items/:id', async(req, res) => {
-  const item = req.body
-  await service.update(item)
-  res.sendStatus(204)
-})
+  app.delete('/food-items/:id', async(req, res) => {
+    const id = req.params.id
+    await service.delete(id)
+    res.sendStatus(204)
+    
+  })
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  app.put('/food-items/:id', async(req, res) => {
+    const item = req.body
+    await service.update(item)
+    res.sendStatus(204)
+  })
 
-export default server
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
+
+}
+
+
+initServer()

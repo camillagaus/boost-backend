@@ -1,6 +1,17 @@
 {
     "configurations": [
         {
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/dist/index.js",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "console": "integratedTerminal",
+            "preLaunchTask": "build"
+        },
+        {
             "type": "node-terminal",
             "name": "Debug start",
             "request": "launch",

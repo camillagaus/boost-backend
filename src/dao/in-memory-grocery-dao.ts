@@ -1,5 +1,5 @@
-import { Dao } from './interfaces/dao'
-import { FoodItem } from './models'
+import { Dao } from '../interfaces/dao'
+import { FoodItem } from '../models'
 
 
 export class InMemoryGroceryDao implements Dao<FoodItem>{
