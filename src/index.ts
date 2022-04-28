@@ -18,7 +18,7 @@ const initServer = async () => {
   // vi vill betrakta bodyn som json. 
   app.use(express.json())
   app.use(timeLogger)
-  const PORT = 8080
+  const PORT = (process.env.PORT || 8080)
   await connectToMongoDB() 
 
   // NEDANFÖR ÄR VÅRA CONTROLLERS. 
