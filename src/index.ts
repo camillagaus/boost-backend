@@ -14,6 +14,8 @@ const initServer = async () => {
   const service = new DefaultGroceryService(dao)
 
   const app = express()
+  // app.use körs varje gång en request görs. 
+  // vi vill betrakta bodyn som json. 
   app.use(express.json())
   app.use(timeLogger)
   const PORT = 8080
